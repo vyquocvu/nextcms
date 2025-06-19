@@ -1,31 +1,41 @@
-# nextcms
-A Next.js CMS combines the flexibility of React with the performance and SEO advantages of server-side rendering and static generation. When deployed on Vercel, it takes full advantage of Vercel’s global edge network, auto-scaling, and CI/CD workflows.
+# NextCMS
 
-## Getting Started
+NextCMS là một hệ thống quản lý nội dung (CMS) đơn giản được xây dựng bằng **Next.js** và **Prisma**. Dự án mô phỏng các tính năng cơ bản của Strapi để giúp bạn làm quen với cách xây dựng CMS bằng Next.js (App Router) và cơ sở dữ liệu qua Prisma.
 
-The Next.js project is located in the `cms` directory. To start the development server:
+## Cài đặt
 
+1. Cài đặt các phụ thuộc trong thư mục `cms`:
+   ```bash
+   cd cms
+   npm install
+   ```
+2. Tạo file `.env` trong thư mục `cms` và khai báo đường dẫn cơ sở dữ liệu:
+   ```bash
+   DATABASE_URL="file:./dev.db"
+   ```
+3. Sinh Prisma Client và khởi tạo cơ sở dữ liệu:
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+## Chạy ở chế độ phát triển
+
+Sau khi cài đặt, khởi chạy máy chủ Next.js:
 ```bash
-cd cms
 npm run dev
 ```
+Ứng dụng sẽ chạy tại `http://localhost:3000`. Giao diện quản trị nằm ở đường dẫn `/dashboard` với các mục **Posts**, **Profile** và **Settings**.
 
-This will launch the app at `http://localhost:3000`.
+## Cấu trúc dự án
 
-## Dashboard Example
+- `cms/prisma/schema.prisma` – Định nghĩa các model: `User`, `Role`, `Permission`, `Resource`, `Post`, `Category`, `Media`.
+- `cms/src/app` – Mã nguồn Next.js và các route API.
+- `cms/data/posts.json` – Nơi lưu trữ dữ liệu bài viết mẫu.
 
-A simple dashboard layout with sidebar navigation is available at `/dashboard` after starting the development server.
+API đơn giản cho bài viết có sẵn tại `/api/posts`, cho phép tạo và lấy danh sách bài viết.
 
-### Posts API
+## Giấy phép
 
-The example includes a minimal content management system with an API for creating and listing posts. You can interact with it from the **Posts** section in the dashboard sidebar.
+Dự án sử dụng giấy phép MIT. Xem file [LICENSE](LICENSE) để biết thêm chi tiết.
 
-### Prisma Schema
-
-The `cms/prisma/schema.prisma` file defines database models for a basic CMS. It covers `User`, `Role`, `Permission`, `Resource`, `Post`, `Category` and `Media` similar to Strapi.
-Run the following commands after installing dependencies to generate the Prisma client:
-
-```bash
-cd cms
-npx prisma generate
-```
