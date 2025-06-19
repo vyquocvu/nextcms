@@ -1,0 +1,84 @@
+// Prisma schema for NextCMS
+// Defines basic CMS models similar to Strapi
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  username  String    @unique
+  password  String
+  role      Role?     @relation(fields: [roleId], references: [id])
+  roleId    Int?
+  posts     Post[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Role {
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
+  description String?
+  users       User[]
+  permissions RolePermission[]
+}
+
+model Permission {
+  id          Int              @id @default(autoincrement())
+  action      String
+  description String?
+  roles       RolePermission[]
+}
+
+model RolePermission {
+  role         Role       @relation(fields: [roleId], references: [id])
+  roleId       Int
+  permission   Permission @relation(fields: [permissionId], references: [id])
+  permissionId Int
+
+  @@id([roleId, permissionId])
+}
+
+model Post {
+  id          Int            @id @default(autoincrement())
+  title       String
+  content     String?
+  author      User           @relation(fields: [authorId], references: [id])
+  authorId    Int
+  categories  PostCategory[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model Category {
+  id        Int            @id @default(autoincrement())
+  name      String
+  slug      String         @unique
+  posts     PostCategory[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model PostCategory {
+  post       Post     @relation(fields: [postId], references: [id])
+  postId     Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+
+  @@id([postId, categoryId])
+}
+
+model Media {
+  id        Int      @id @default(autoincrement())
+  name      String
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
