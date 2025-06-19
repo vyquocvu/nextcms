@@ -30,9 +30,18 @@ model Role {
   permissions RolePermission[]
 }
 
+model Resource {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  description String?
+  permissions Permission[]
+}
+
 model Permission {
   id          Int              @id @default(autoincrement())
   action      String
+  resource    Resource   @relation(fields: [resourceId], references: [id])
+  resourceId  Int
   description String?
   roles       RolePermission[]
 }

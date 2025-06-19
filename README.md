@@ -22,7 +22,7 @@ The example includes a minimal content management system with an API for creatin
 
 ### Prisma Schema
 
-The `cms/prisma/schema.prisma` file defines database models for a basic CMS. It covers `User`, `Role`, `Permission`, `Post`, `Category` and `Media` similar to Strapi.
+The `cms/prisma/schema.prisma` file defines database models for a basic CMS. It covers `User`, `Role`, `Permission`, `Resource`, `Post`, `Category` and `Media` similar to Strapi.
 Run the following commands after installing dependencies to generate the Prisma client:
 
 ```bash
