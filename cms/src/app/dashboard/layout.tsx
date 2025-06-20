@@ -21,6 +21,9 @@ export default function DashboardLayout({
           <Link className="hover:underline" href="/dashboard/posts">
             Posts
           </Link>
+          <Link className="hover:underline" href="/dashboard/collections">
+            Collections
+          </Link>
         </nav>
       </aside>
       <main className="flex-1 p-6">{children}</main>
