@@ -1,41 +1,40 @@
 # NextCMS
 
-NextCMS là một hệ thống quản lý nội dung (CMS) đơn giản được xây dựng bằng **Next.js** và **Prisma**. Dự án mô phỏng các tính năng cơ bản của Strapi để giúp bạn làm quen với cách xây dựng CMS bằng Next.js (App Router) và cơ sở dữ liệu qua Prisma.
+NextCMS is a simple content management system (CMS) built with **Next.js** and **Prisma**. It mirrors basic Strapi features so you can learn how to build a CMS using the Next.js App Router and Prisma-backed database.
 
-## Cài đặt
+## Setup
 
-1. Cài đặt các phụ thuộc trong thư mục `cms`:
+1. Install dependencies in the `cms` directory:
    ```bash
    cd cms
    npm install
    ```
-2. Tạo file `.env` trong thư mục `cms` và khai báo đường dẫn cơ sở dữ liệu:
+2. Create a `.env` file in `cms` and specify the database connection:
    ```bash
    DATABASE_URL="file:./dev.db"
    ```
-3. Sinh Prisma Client và khởi tạo cơ sở dữ liệu:
+3. Generate the Prisma client and initialize the database:
    ```bash
    npx prisma generate
    npx prisma db push
    ```
 
-## Chạy ở chế độ phát triển
+## Development
 
-Sau khi cài đặt, khởi chạy máy chủ Next.js:
+Start the Next.js server:
 ```bash
 npm run dev
 ```
-Ứng dụng sẽ chạy tại `http://localhost:3000`. Giao diện quản trị nằm ở đường dẫn `/dashboard` với các mục **Posts**, **Profile** và **Settings**.
+The app runs at `http://localhost:3000`. The admin dashboard is located at `/dashboard` with **Posts**, **Profile**, and **Settings** sections.
 
-## Cấu trúc dự án
+## Project structure
 
-- `cms/prisma/schema.prisma` – Định nghĩa các model: `User`, `Role`, `Permission`, `Resource`, `Post`, `Category`, `Media`.
-- `cms/src/app` – Mã nguồn Next.js và các route API.
-- `cms/data/posts.json` – Nơi lưu trữ dữ liệu bài viết mẫu.
+- `cms/prisma/schema.prisma` – Models for `User`, `Role`, `Permission`, `Resource`, `Post`, `Category`, and `Media`.
+- `cms/src/app` – Next.js source code and API routes.
+- `cms/data/posts.json` – Sample post data.
 
-API đơn giản cho bài viết có sẵn tại `/api/posts`, cho phép tạo và lấy danh sách bài viết.
+A simple posts API is available at `/api/posts` for creating and fetching posts.
 
-## Giấy phép
+## License
 
-Dự án sử dụng giấy phép MIT. Xem file [LICENSE](LICENSE) để biết thêm chi tiết.
-
+This project is licensed under the MIT license. See [LICENSE](LICENSE) for details.
