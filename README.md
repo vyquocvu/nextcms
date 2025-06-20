@@ -1,31 +1,40 @@
-# nextcms
-A Next.js CMS combines the flexibility of React with the performance and SEO advantages of server-side rendering and static generation. When deployed on Vercel, it takes full advantage of Vercel’s global edge network, auto-scaling, and CI/CD workflows.
+# NextCMS
 
-## Getting Started
+NextCMS is a simple content management system (CMS) built with **Next.js** and **Prisma**. It mirrors basic Strapi features so you can learn how to build a CMS using the Next.js App Router and Prisma-backed database.
 
-The Next.js project is located in the `cms` directory. To start the development server:
+## Setup
 
+1. Install dependencies in the `cms` directory:
+   ```bash
+   cd cms
+   npm install
+   ```
+2. Create a `.env` file in `cms` and specify the database connection:
+   ```bash
+   DATABASE_URL="file:./dev.db"
+   ```
+3. Generate the Prisma client and initialize the database:
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+## Development
+
+Start the Next.js server:
 ```bash
-cd cms
 npm run dev
 ```
+The app runs at `http://localhost:3000`. The admin dashboard is located at `/dashboard` with **Posts**, **Profile**, and **Settings** sections.
 
-This will launch the app at `http://localhost:3000`.
+## Project structure
 
-## Dashboard Example
+- `cms/prisma/schema.prisma` – Models for `User`, `Role`, `Permission`, `Resource`, `Post`, `Category`, and `Media`.
+- `cms/src/app` – Next.js source code and API routes.
+- `cms/data/posts.json` – Sample post data.
 
-A simple dashboard layout with sidebar navigation is available at `/dashboard` after starting the development server.
+A simple posts API is available at `/api/posts` for creating and fetching posts.
 
-### Posts API
+## License
 
-The example includes a minimal content management system with an API for creating and listing posts. You can interact with it from the **Posts** section in the dashboard sidebar.
-
-### Prisma Schema
-
-The `cms/prisma/schema.prisma` file defines database models for a basic CMS. It covers `User`, `Role`, `Permission`, `Resource`, `Post`, `Category` and `Media` similar to Strapi.
-Run the following commands after installing dependencies to generate the Prisma client:
-
-```bash
-cd cms
-npx prisma generate
-```
+This project is licensed under the MIT license. See [LICENSE](LICENSE) for details.
