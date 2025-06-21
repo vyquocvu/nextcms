@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir } from 'fs/promises';
+import { readFile, writeFile, mkdir, rm } from 'fs/promises';
 import path from 'path';
 
 export interface Field {
@@ -39,6 +39,14 @@ export async function addCollectionType(type: CollectionType) {
   await writeJSON(TYPE_PATH, types);
   await mkdir(path.join(DATA_DIR, type.slug), { recursive: true });
   await writeJSON(path.join(DATA_DIR, type.slug, 'entries.json'), []);
+}
+
+export async function removeCollectionType(slug: string) {
+  const types = await getCollectionTypes();
+  const filtered = types.filter((t) => t.slug !== slug);
+  if (filtered.length === types.length) return;
+  await writeJSON(TYPE_PATH, filtered);
+  await rm(path.join(DATA_DIR, slug), { recursive: true, force: true });
 }
 
 export async function getEntries<T = unknown>(slug: string): Promise<T[]> {

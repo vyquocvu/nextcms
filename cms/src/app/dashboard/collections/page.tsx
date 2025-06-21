@@ -45,15 +45,27 @@ export default function CollectionsPage() {
     }
   }
 
+  async function deleteType(slugToDelete: string) {
+    await fetch(`/api/collections/types/${slugToDelete}`, { method: 'DELETE' });
+    setTypes((prev) => prev.filter((t) => t.slug !== slugToDelete));
+  }
+
   return (
     <div>
       <h1 className="text-xl font-bold mb-4">Collections</h1>
       <ul className="space-y-2 mb-6">
         {types.map((t) => (
-          <li key={t.slug}>
-            <Link className="underline" href={`/dashboard/collections/${t.slug}`}>
+          <li key={t.slug} className="flex items-center space-x-2">
+            <Link className="underline flex-1" href={`/dashboard/collections/${t.slug}`}>
               {t.name}
             </Link>
+            <button
+              type="button"
+              className="text-red-500"
+              onClick={() => deleteType(t.slug)}
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>
