@@ -18,6 +18,7 @@ export default function CollectionEntriesPage() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [collectionType, setCollectionType] = useState<CollectionType | null>(null);
   const [formState, setFormState] = useState<Record<string, string>>({});
+  const [editing, setEditing] = useState<Entry | null>(null);
 
   useEffect(() => {
     if (!params.slug) return;
@@ -32,7 +33,18 @@ export default function CollectionEntriesPage() {
       .then(setEntries);
   }, [params.slug]);
 
-  async function addEntry(e: React.FormEvent<HTMLFormElement>) {
+  function startEdit(entry: Entry) {
+    if (!collectionType) return;
+    const state: Record<string, string> = {};
+    collectionType.fields.forEach((f) => {
+      const value = entry[f.name];
+      state[f.name] = value !== undefined ? String(value) : '';
+    });
+    setEditing(entry);
+    setFormState(state);
+  }
+
+  async function saveEntry(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!collectionType) return;
     const payload: Record<string, unknown> = {};
@@ -46,15 +58,33 @@ export default function CollectionEntriesPage() {
         payload[f.name] = value;
       }
     });
-    const res = await fetch(`/api/collections/${params.slug}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (res.ok) {
-      const entry = await res.json();
-      setEntries([...entries, entry]);
-      setFormState({});
+
+    if (editing) {
+      const res = await fetch(
+        `/api/collections/${params.slug}/${editing.id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        }
+      );
+      if (res.ok) {
+        const updated = await res.json();
+        setEntries(entries.map((e) => (e.id === updated.id ? updated : e)));
+        setEditing(null);
+        setFormState({});
+      }
+    } else {
+      const res = await fetch(`/api/collections/${params.slug}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        const entry = await res.json();
+        setEntries([...entries, entry]);
+        setFormState({});
+      }
     }
   }
 
@@ -72,10 +102,17 @@ export default function CollectionEntriesPage() {
                 {String(entry[f.name] ?? '')}
               </p>
             ))}
+            <button
+              type="button"
+              className="mt-2 text-blue-500"
+              onClick={() => startEdit(entry)}
+            >
+              Edit
+            </button>
           </li>
         ))}
       </ul>
-      <form onSubmit={addEntry} className="flex flex-col space-y-2">
+      <form onSubmit={saveEntry} className="flex flex-col space-y-2">
         {collectionType.fields.map((f) => {
           if (f.type === 'boolean') {
             return (
@@ -108,9 +145,23 @@ export default function CollectionEntriesPage() {
             />
           );
         })}
-        <button type="submit" className="p-2 bg-blue-500 text-white rounded">
-          Add Entry
-        </button>
+        <div className="flex space-x-2">
+          {editing && (
+            <button
+              type="button"
+              className="p-2 bg-gray-200 rounded"
+              onClick={() => {
+                setEditing(null);
+                setFormState({});
+              }}
+            >
+              Cancel
+            </button>
+          )}
+          <button type="submit" className="p-2 bg-blue-500 text-white rounded">
+            {editing ? 'Update Entry' : 'Add Entry'}
+          </button>
+        </div>
       </form>
     </div>
   );
