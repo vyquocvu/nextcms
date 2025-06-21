@@ -34,10 +34,22 @@ export default function CollectionEntriesPage() {
 
   async function addEntry(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!collectionType) return;
+    const payload: Record<string, unknown> = {};
+    collectionType.fields.forEach((f) => {
+      const value = formState[f.name];
+      if (f.type === 'number') {
+        payload[f.name] = Number(value);
+      } else if (f.type === 'boolean') {
+        payload[f.name] = value === 'true';
+      } else {
+        payload[f.name] = value;
+      }
+    });
     const res = await fetch(`/api/collections/${params.slug}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formState),
+      body: JSON.stringify(payload),
     });
     if (res.ok) {
       const entry = await res.json();
@@ -64,16 +76,38 @@ export default function CollectionEntriesPage() {
         ))}
       </ul>
       <form onSubmit={addEntry} className="flex flex-col space-y-2">
-        {collectionType.fields.map((f) => (
-          <input
-            key={f.name}
-            className="border p-2"
-            placeholder={f.name}
-            value={formState[f.name] || ''}
-            onChange={(e) => setFormState({ ...formState, [f.name]: e.target.value })}
-            required
-          />
-        ))}
+        {collectionType.fields.map((f) => {
+          if (f.type === 'boolean') {
+            return (
+              <label key={f.name} className="flex items-center space-x-2">
+                <span>{f.name}</span>
+                <input
+                  type="checkbox"
+                  checked={formState[f.name] === 'true'}
+                  onChange={(e) =>
+                    setFormState({
+                      ...formState,
+                      [f.name]: e.target.checked ? 'true' : 'false',
+                    })
+                  }
+                />
+              </label>
+            );
+          }
+          return (
+            <input
+              key={f.name}
+              type={f.type === 'number' ? 'number' : 'text'}
+              className="border p-2"
+              placeholder={f.name}
+              value={formState[f.name] || ''}
+              onChange={(e) =>
+                setFormState({ ...formState, [f.name]: e.target.value })
+              }
+              required
+            />
+          );
+        })}
         <button type="submit" className="p-2 bg-blue-500 text-white rounded">
           Add Entry
         </button>
