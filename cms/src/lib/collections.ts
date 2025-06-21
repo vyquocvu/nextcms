@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir } from 'fs/promises';
+import { readFile, writeFile, mkdir, rm } from 'fs/promises';
 import path from 'path';
 
 export interface Field {
@@ -41,6 +41,14 @@ export async function addCollectionType(type: CollectionType) {
   await writeJSON(path.join(DATA_DIR, type.slug, 'entries.json'), []);
 }
 
+export async function removeCollectionType(slug: string) {
+  const types = await getCollectionTypes();
+  const filtered = types.filter((t) => t.slug !== slug);
+  if (filtered.length === types.length) return;
+  await writeJSON(TYPE_PATH, filtered);
+  await rm(path.join(DATA_DIR, slug), { recursive: true, force: true });
+}
+
 export async function getEntries<T = unknown>(slug: string): Promise<T[]> {
   const file = path.join(DATA_DIR, slug, 'entries.json');
   return readJSON<T[]>(file, []);
@@ -53,4 +61,14 @@ export async function addEntry<T extends Record<string, unknown>>(slug: string, 
   const file = path.join(DATA_DIR, slug, 'entries.json');
   await writeJSON(file, entries);
   return newEntry;
+}
+
+export async function updateEntry<T extends Record<string, unknown>>(slug: string, id: string, updates: T) {
+  const entries = await getEntries<T & { id: string; createdAt: string }>(slug);
+  const index = entries.findIndex((e) => e.id === id);
+  if (index === -1) return null;
+  entries[index] = { ...entries[index], ...updates };
+  const file = path.join(DATA_DIR, slug, 'entries.json');
+  await writeJSON(file, entries);
+  return entries[index];
 }
