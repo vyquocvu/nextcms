@@ -16,6 +16,12 @@ export interface ModelMeta {
   fields: FieldMeta[];
 }
 
+export async function getModelNames(): Promise<string[]> {
+  const schema = await readFile(SCHEMA_PATH, 'utf8');
+  const matches = [...schema.matchAll(/model\s+(\w+)\s+\{/g)];
+  return matches.map((m) => m[1]);
+}
+
 export async function getModelSchema(model: string): Promise<ModelMeta | null> {
   const schema = await readFile(SCHEMA_PATH, 'utf8');
   const regex = new RegExp(`model\\s+${model}\\s+{([\\s\\S]*?)}`);
