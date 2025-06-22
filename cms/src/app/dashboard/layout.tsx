@@ -18,9 +18,6 @@ export default function DashboardLayout({
           <Link className="hover:underline" href="/dashboard/settings">
             Settings
           </Link>
-          <Link className="hover:underline" href="/dashboard/posts">
-            Posts
-          </Link>
           <Link className="hover:underline" href="/dashboard/collections">
             Collections
           </Link>
