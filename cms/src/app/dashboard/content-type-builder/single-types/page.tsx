@@ -1,8 +1,8 @@
 'use client';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
-interface CollectionType {
+interface SingleType {
   name: string;
   slug: string;
 }
@@ -12,29 +12,27 @@ interface FieldData {
   type: string;
 }
 
-export default function CollectionsPage() {
-  const [types, setTypes] = useState<CollectionType[]>([]);
+export default function SingleTypesPage() {
+  const [types, setTypes] = useState<SingleType[]>([]);
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
-  const [fields, setFields] = useState<FieldData[]>([
-    { name: '', type: 'string' },
-  ]);
+  const [fields, setFields] = useState<FieldData[]>([{ name: '', type: 'string' }]);
 
   useEffect(() => {
-    fetch('/api/collections/types')
+    fetch('/api/singles/types')
       .then((res) => res.json())
       .then(setTypes);
   }, []);
 
   async function addType(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const sanitizedFields = fields
+    const sanitized = fields
       .filter((f) => f.name.trim())
       .map((f) => ({ name: f.name.trim(), type: f.type }));
-    const res = await fetch('/api/collections/types', {
+    const res = await fetch('/api/singles/types', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, slug, fields: sanitizedFields }),
+      body: JSON.stringify({ name, slug, fields: sanitized }),
     });
     if (res.ok) {
       const type = await res.json();
@@ -45,27 +43,13 @@ export default function CollectionsPage() {
     }
   }
 
-  async function deleteType(slugToDelete: string) {
-    await fetch(`/api/collections/types/${slugToDelete}`, { method: 'DELETE' });
-    setTypes((prev) => prev.filter((t) => t.slug !== slugToDelete));
-  }
-
   return (
     <div>
-      <h1 className="text-xl font-bold mb-4">Collections</h1>
+      <h1 className="text-xl font-bold mb-4">Single Types</h1>
       <ul className="space-y-2 mb-6">
         {types.map((t) => (
-          <li key={t.slug} className="flex items-center space-x-2">
-            <Link className="underline flex-1" href={`/dashboard/collections/${t.slug}`}>
-              {t.name}
-            </Link>
-            <button
-              type="button"
-              className="text-red-500"
-              onClick={() => deleteType(t.slug)}
-            >
-              Delete
-            </button>
+          <li key={t.slug}>
+            <Link className="underline" href={`/dashboard/singles/${t.slug}`}>{t.name}</Link>
           </li>
         ))}
       </ul>
@@ -109,9 +93,6 @@ export default function CollectionsPage() {
               <option value="string">Text</option>
               <option value="number">Number</option>
               <option value="boolean">Boolean</option>
-              <option value="date">Date</option>
-              <option value="email">Email</option>
-              <option value="url">URL</option>
             </select>
             {fields.length > 1 && (
               <button
@@ -132,7 +113,7 @@ export default function CollectionsPage() {
           Add Field
         </button>
         <button type="submit" className="p-2 bg-blue-500 text-white rounded">
-          Add Collection
+          Add Single Type
         </button>
       </form>
     </div>

@@ -27,15 +27,13 @@ Start the Next.js server:
 ```bash
 npm run dev
 ```
-The app runs at `http://localhost:3000`. The admin dashboard is located at `/dashboard` with **Posts**, **Profile**, and **Settings** sections.
+The app runs at `http://localhost:3000`. The admin dashboard is located at `/dashboard` with **Collections**, **Profile**, and **Settings** sections.
 
 ## Project structure
 
-- `cms/prisma/schema.prisma` – Models for `User`, `Role`, `Permission`, `Resource`, `Post`, `Category`, and `Media`.
+- `cms/prisma/schema.prisma` – Models for `User`, `Role`, `Permission`, `Resource`, `Category`, and `Media`.
 - `cms/src/app` – Next.js source code and API routes.
-- `cms/data/posts.json` – Sample post data.
 
-A simple posts API is available at `/api/posts` for creating and fetching posts.
 
 ## License
 
