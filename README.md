@@ -31,7 +31,7 @@ The app runs at `http://localhost:3000`. The admin dashboard is located at `/das
 
 ## Project structure
 
-- `cms/prisma/schema.prisma` – Models for `User`, `Role`, `Permission`, `Resource`, `Category`, and `Media`.
+- `cms/prisma/schema.prisma` – Models for `User`, `Role` (Admin, Editor, Viewer), `Permission`, `Resource`, `Category`, and `Media` with a many-to-many relation between `User` and `Role`.
 - `cms/src/app` – Next.js source code and API routes.
 
 
