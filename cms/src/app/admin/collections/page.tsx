@@ -22,7 +22,7 @@ export default function CollectionsPage() {
       <ul className="space-y-2">
         {types.map((t) => (
           <li key={t.slug}>
-            <Link className="underline" href={`/dashboard/collections/${t.slug}`}>
+            <Link className="underline" href={`/admin/collections/${t.slug}`}> 
               {t.name}
             </Link>
           </li>

@@ -1,3 +1,3 @@
-export default function AdminHome() {
-  return <h1 className="text-xl font-bold">Admin</h1>;
+export default function DashboardPage() {
+  return <h1 className="text-xl font-bold">Dashboard Home</h1>;
 }

@@ -27,7 +27,7 @@ Start the Next.js server:
 ```bash
 npm run dev
 ```
-The app runs at `http://localhost:3000`. The admin dashboard is located at `/dashboard` with **Posts**, **Profile**, and **Settings** sections.
+The app runs at `http://localhost:3000`. The admin dashboard is located at `/admin` with **Posts**, **Profile**, and **Settings** sections.
 
 ## Project structure
 
