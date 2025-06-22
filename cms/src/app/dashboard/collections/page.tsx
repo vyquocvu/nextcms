@@ -109,6 +109,9 @@ export default function CollectionsPage() {
               <option value="string">Text</option>
               <option value="number">Number</option>
               <option value="boolean">Boolean</option>
+              <option value="date">Date</option>
+              <option value="email">Email</option>
+              <option value="url">URL</option>
             </select>
             {fields.length > 1 && (
               <button

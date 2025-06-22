@@ -131,10 +131,25 @@ export default function CollectionEntriesPage() {
               </label>
             );
           }
+          let inputType = 'text';
+          switch (f.type) {
+            case 'number':
+              inputType = 'number';
+              break;
+            case 'date':
+              inputType = 'date';
+              break;
+            case 'email':
+              inputType = 'email';
+              break;
+            case 'url':
+              inputType = 'url';
+              break;
+          }
           return (
             <input
               key={f.name}
-              type={f.type === 'number' ? 'number' : 'text'}
+              type={inputType}
               className="border p-2"
               placeholder={f.name}
               value={formState[f.name] || ''}
