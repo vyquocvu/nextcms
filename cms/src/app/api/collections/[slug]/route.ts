@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 export async function GET(
   _req: NextRequest,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context: any
 ) {
   const { params } = await context;
@@ -12,6 +13,7 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context: any
 ) {
   const { params } = await context;

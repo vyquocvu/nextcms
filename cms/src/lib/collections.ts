@@ -72,3 +72,13 @@ export async function updateEntry<T extends Record<string, unknown>>(slug: strin
   await writeJSON(file, entries);
   return entries[index];
 }
+
+export async function deleteEntry(slug: string, id: string) {
+  const entries = await getEntries<{ id: string } & Record<string, unknown>>(slug);
+  const index = entries.findIndex((e) => e.id === id);
+  if (index === -1) return false;
+  entries.splice(index, 1);
+  const file = path.join(DATA_DIR, slug, 'entries.json');
+  await writeJSON(file, entries);
+  return true;
+}
