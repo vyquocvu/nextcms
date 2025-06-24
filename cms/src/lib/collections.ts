@@ -1,5 +1,5 @@
-import { readFile, writeFile, mkdir, rm } from 'fs/promises';
-import path from 'path';
+import type { Prisma } from '@prisma/client';
+import prisma from './prisma';
 
 export interface Field {
   name: string;
@@ -13,64 +13,60 @@ export interface CollectionType {
   fields: Field[];
 }
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const TYPE_PATH = path.join(DATA_DIR, 'collection-types.json');
-
-async function readJSON<T>(file: string, defaultValue: T): Promise<T> {
-  try {
-    const data = await readFile(file, 'utf8');
-    return JSON.parse(data) as T;
-  } catch {
-    return defaultValue;
-  }
-}
-
-async function writeJSON(file: string, data: unknown) {
-  await writeFile(file, JSON.stringify(data, null, 2));
-}
-
 export async function getCollectionTypes(): Promise<CollectionType[]> {
-  return readJSON<CollectionType[]>(TYPE_PATH, []);
+  const types = await prisma.collectionType.findMany();
+  return types.map((t) => ({
+    name: t.name,
+    slug: t.slug,
+    fields: t.fields as Field[],
+  }));
 }
 
 export async function addCollectionType(type: CollectionType) {
-  const types = await getCollectionTypes();
-  types.push(type);
-  await writeJSON(TYPE_PATH, types);
-  await mkdir(path.join(DATA_DIR, type.slug), { recursive: true });
-  await writeJSON(path.join(DATA_DIR, type.slug, 'entries.json'), []);
+  await prisma.collectionType.create({
+    data: {
+      name: type.name,
+      slug: type.slug,
+      fields: type.fields as unknown as Prisma.JsonValue,
+    },
+  });
 }
 
 export async function removeCollectionType(slug: string) {
-  const types = await getCollectionTypes();
-  const filtered = types.filter((t) => t.slug !== slug);
-  if (filtered.length === types.length) return;
-  await writeJSON(TYPE_PATH, filtered);
-  await rm(path.join(DATA_DIR, slug), { recursive: true, force: true });
+  await prisma.collectionType.delete({ where: { slug } }).catch(() => undefined);
 }
 
 export async function getEntries<T = unknown>(slug: string): Promise<T[]> {
-  const file = path.join(DATA_DIR, slug, 'entries.json');
-  return readJSON<T[]>(file, []);
+  const entries = await prisma.collectionEntry.findMany({
+    where: { type: { slug } },
+    orderBy: { id: 'asc' },
+  });
+  return entries.map((e) => ({ id: String(e.id), createdAt: e.createdAt, ...(e.data as T) }));
 }
 
 export async function addEntry<T extends Record<string, unknown>>(slug: string, entry: T) {
-  const entries = await getEntries<T & { id: string; createdAt: string }>(slug);
-  const newEntry = { id: Date.now().toString(), createdAt: new Date().toISOString(), ...entry };
-  entries.push(newEntry);
-  const file = path.join(DATA_DIR, slug, 'entries.json');
-  await writeJSON(file, entries);
-  return newEntry;
+  const type = await prisma.collectionType.findUnique({ where: { slug } });
+  if (!type) throw new Error('Type not found');
+  const created = await prisma.collectionEntry.create({
+    data: {
+      typeId: type.id,
+      data: entry as Prisma.JsonValue,
+    },
+  });
+  return { id: String(created.id), createdAt: created.createdAt, ...entry } as T & { id: string; createdAt: Date };
 }
 
 export async function updateEntry<T extends Record<string, unknown>>(slug: string, id: string, updates: T) {
-  const entries = await getEntries<T & { id: string; createdAt: string }>(slug);
-  const index = entries.findIndex((e) => e.id === id);
-  if (index === -1) return null;
-  entries[index] = { ...entries[index], ...updates };
-  const file = path.join(DATA_DIR, slug, 'entries.json');
-  await writeJSON(file, entries);
-  return entries[index];
+  const entry = await prisma.collectionEntry.findFirst({
+    where: { id: Number(id), type: { slug } },
+  });
+  if (!entry) return null;
+  const data = { ...(entry.data as Record<string, unknown>), ...updates };
+  const updated = await prisma.collectionEntry.update({
+    where: { id: entry.id },
+    data: { data },
+  });
+  return { id: String(updated.id), createdAt: updated.createdAt, ...data } as T & { id: string; createdAt: Date };
 }
 
 export async function deleteEntry(slug: string, id: string) {
