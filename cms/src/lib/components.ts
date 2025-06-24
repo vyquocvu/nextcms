@@ -32,3 +32,10 @@ export async function addComponent(component: Component) {
   comps.push(component);
   await writeJSON(COMPONENT_PATH, comps);
 }
+
+export async function removeComponent(slug: string) {
+  const comps = await getComponents();
+  const filtered = comps.filter((c) => c.slug !== slug);
+  if (filtered.length === comps.length) return;
+  await writeJSON(COMPONENT_PATH, filtered);
+}

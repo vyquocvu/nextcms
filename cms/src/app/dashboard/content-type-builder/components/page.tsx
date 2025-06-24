@@ -43,12 +43,26 @@ export default function ComponentsPage() {
     }
   }
 
+  async function deleteComponent(slugToDelete: string) {
+    await fetch(`/api/components/${slugToDelete}`, { method: 'DELETE' });
+    setComponents((prev) => prev.filter((c) => c.slug !== slugToDelete));
+  }
+
   return (
     <div>
       <h1 className="text-xl font-bold mb-4">Components</h1>
       <ul className="space-y-2 mb-6">
         {components.map((c) => (
-          <li key={c.slug}>{c.name}</li>
+          <li key={c.slug} className="flex items-center space-x-2">
+            <span className="flex-1">{c.name}</span>
+            <button
+              type="button"
+              className="text-red-500"
+              onClick={() => deleteComponent(c.slug)}
+            >
+              Delete
+            </button>
+          </li>
         ))}
       </ul>
       <form onSubmit={addComponent} className="flex flex-col space-y-2">
