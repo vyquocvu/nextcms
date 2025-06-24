@@ -9,11 +9,12 @@ NextCMS is a simple content management system (CMS) built with **Next.js** and *
    cd cms
    npm install
    ```
-2. Create a `.env` file in `cms` and specify the database connection:
+2. Copy the provided example env file and update it:
    ```bash
+   cp .env.example .env
    # Choose sqlite, mysql, or postgresql
-   DB_TYPE=sqlite
-   DATABASE_URL="file:./dev.db"
+   # DB_TYPE=sqlite
+   # DATABASE_URL="file:./dev.db"
    ```
 3. Generate the Prisma client and initialize the database:
    ```bash
