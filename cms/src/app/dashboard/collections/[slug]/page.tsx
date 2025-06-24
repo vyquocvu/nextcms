@@ -22,11 +22,10 @@ export default function CollectionEntriesPage() {
 
   useEffect(() => {
     if (!params.slug) return;
-    fetch('/api/collections/types')
-      .then((res) => res.json())
-      .then((types: CollectionType[]) => {
-        const type = types.find((t) => t.slug === params.slug);
-        setCollectionType(type || null);
+    fetch(`/api/collections/types/${params.slug}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((type: CollectionType | null) => {
+        setCollectionType(type);
       });
     fetch(`/api/collections/${params.slug}`)
       .then((res) => res.json())

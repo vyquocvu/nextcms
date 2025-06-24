@@ -22,6 +22,13 @@ export async function getCollectionTypes(): Promise<CollectionType[]> {
   }));
 }
 
+export async function getCollectionType(
+  slug: string
+): Promise<CollectionType | null> {
+  const types = await getCollectionTypes();
+  return types.find((t) => t.slug === slug) || null;
+}
+
 export async function addCollectionType(type: CollectionType) {
   await prisma.collectionType.create({
     data: {
