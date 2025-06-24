@@ -43,13 +43,25 @@ export default function SingleTypesPage() {
     }
   }
 
+  async function deleteType(slugToDelete: string) {
+    await fetch(`/api/singles/types/${slugToDelete}`, { method: 'DELETE' });
+    setTypes((prev) => prev.filter((t) => t.slug !== slugToDelete));
+  }
+
   return (
     <div>
       <h1 className="text-xl font-bold mb-4">Single Types</h1>
       <ul className="space-y-2 mb-6">
         {types.map((t) => (
-          <li key={t.slug}>
-            <Link className="underline" href={`/dashboard/singles/${t.slug}`}>{t.name}</Link>
+          <li key={t.slug} className="flex items-center space-x-2">
+            <Link className="underline flex-1" href={`/dashboard/singles/${t.slug}`}>{t.name}</Link>
+            <button
+              type="button"
+              className="text-red-500"
+              onClick={() => deleteType(t.slug)}
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>

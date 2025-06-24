@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir } from 'fs/promises';
+import { readFile, writeFile, mkdir, rm } from 'fs/promises';
 import path from 'path';
 
 export interface Field {
@@ -38,6 +38,14 @@ export async function addSingleType(type: SingleType) {
   await writeJSON(TYPE_PATH, types);
   await mkdir(path.join(DATA_DIR, type.slug), { recursive: true });
   await writeJSON(path.join(DATA_DIR, type.slug, 'entry.json'), {});
+}
+
+export async function removeSingleType(slug: string) {
+  const types = await getSingleTypes();
+  const filtered = types.filter((t) => t.slug !== slug);
+  if (filtered.length === types.length) return;
+  await writeJSON(TYPE_PATH, filtered);
+  await rm(path.join(DATA_DIR, slug), { recursive: true, force: true });
 }
 
 export async function getSingleEntry<T = unknown>(slug: string): Promise<T> {
