@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 export async function GET(
   _req: NextRequest,
-  context: any
+  context: { params: { slug: string } }
 ) {
   const { params } = await context;
   const entries = await getEntries(params.slug);
@@ -12,7 +12,7 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  context: any
+  context: { params: { slug: string } }
 ) {
   const { params } = await context;
   const body = await request.json();
