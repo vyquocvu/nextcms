@@ -22,11 +22,10 @@ export default function CollectionEntriesPage() {
 
   useEffect(() => {
     if (!params.slug) return;
-    fetch('/api/collections/types')
-      .then((res) => res.json())
-      .then((types: CollectionType[]) => {
-        const type = types.find((t) => t.slug === params.slug);
-        setCollectionType(type || null);
+    fetch(`/api/collections/types/${params.slug}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((type: CollectionType | null) => {
+        setCollectionType(type);
       });
     fetch(`/api/collections/${params.slug}`)
       .then((res) => res.json())
@@ -42,6 +41,11 @@ export default function CollectionEntriesPage() {
     });
     setEditing(entry);
     setFormState(state);
+  }
+
+  async function deleteEntryById(id: string) {
+    await fetch(`/api/collections/${params.slug}/${id}`, { method: 'DELETE' });
+    setEntries((prev) => prev.filter((e) => e.id !== id));
   }
 
   async function saveEntry(e: React.FormEvent<HTMLFormElement>) {
@@ -108,6 +112,13 @@ export default function CollectionEntriesPage() {
               onClick={() => startEdit(entry)}
             >
               Edit
+            </button>
+            <button
+              type="button"
+              className="mt-2 ml-2 text-red-500"
+              onClick={() => deleteEntryById(entry.id)}
+            >
+              Delete
             </button>
           </li>
         ))}

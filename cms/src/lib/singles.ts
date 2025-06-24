@@ -1,55 +1,48 @@
-import { readFile, writeFile, mkdir } from 'fs/promises';
-import path from 'path';
+import type { Prisma } from '@prisma/client'
+import prisma from './prisma'
 
 export interface Field {
-  name: string;
-  type: string;
+  name: string
+  type: string
 }
 
 export interface SingleType {
-  name: string;
-  slug: string;
-  fields: Field[];
-}
-
-const DATA_DIR = path.join(process.cwd(), 'data');
-const TYPE_PATH = path.join(DATA_DIR, 'single-types.json');
-
-async function readJSON<T>(file: string, def: T): Promise<T> {
-  try {
-    const data = await readFile(file, 'utf8');
-    return JSON.parse(data) as T;
-  } catch {
-    return def;
-  }
-}
-
-async function writeJSON(file: string, data: unknown) {
-  await writeFile(file, JSON.stringify(data, null, 2));
+  name: string
+  slug: string
+  fields: Field[]
 }
 
 export async function getSingleTypes(): Promise<SingleType[]> {
-  return readJSON<SingleType[]>(TYPE_PATH, []);
+  const types = await prisma.singleType.findMany()
+  return types.map(t => ({ name: t.name, slug: t.slug, fields: t.fields as Field[] }))
 }
 
 export async function addSingleType(type: SingleType) {
-  const types = await getSingleTypes();
-  types.push(type);
-  await writeJSON(TYPE_PATH, types);
-  await mkdir(path.join(DATA_DIR, type.slug), { recursive: true });
-  await writeJSON(path.join(DATA_DIR, type.slug, 'entry.json'), {});
+  await prisma.singleType.create({
+    data: {
+      name: type.name,
+      slug: type.slug,
+      fields: type.fields as unknown as Prisma.JsonValue,
+    },
+  })
+}
+
+export async function removeSingleType(slug: string) {
+  await prisma.singleType.delete({ where: { slug } }).catch(() => undefined)
 }
 
 export async function getSingleEntry<T = unknown>(slug: string): Promise<T> {
-  const file = path.join(DATA_DIR, slug, 'entry.json');
-  return readJSON<T>(file, {} as T);
+  const type = await prisma.singleType.findUnique({ where: { slug }, include: { entry: true } })
+  return (type?.entry?.data as T) ?? ({} as T)
 }
 
-export async function updateSingleEntry<T extends Record<string, unknown>>(
-  slug: string,
-  entry: T
-) {
-  const file = path.join(DATA_DIR, slug, 'entry.json');
-  await writeJSON(file, entry);
-  return entry;
+export async function updateSingleEntry<T extends Record<string, unknown>>(slug: string, entry: T) {
+  const type = await prisma.singleType.findUnique({ where: { slug } })
+  if (!type) throw new Error('Type not found')
+  const updated = await prisma.singleEntry.upsert({
+    where: { typeId: type.id },
+    update: { data: entry as Prisma.JsonValue },
+    create: { typeId: type.id, data: entry as Prisma.JsonValue },
+  })
+  return updated.data as T
 }

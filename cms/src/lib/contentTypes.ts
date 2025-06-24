@@ -1,7 +1,5 @@
-import { readFile, writeFile } from 'fs/promises';
-import path from 'path';
-
-const TYPES_PATH = path.join(process.cwd(), 'data', 'content-types.json');
+import type { Prisma } from '@prisma/client';
+import prisma from './prisma';
 
 export interface ContentField {
   name: string;
@@ -12,55 +10,37 @@ export interface ContentType {
   fields: ContentField[];
 }
 
-async function readTypes(): Promise<ContentType[]> {
-  try {
-    const data = await readFile(TYPES_PATH, 'utf8');
-    return JSON.parse(data) as ContentType[];
-  } catch {
-    return [];
-  }
-}
-
-async function writeTypes(types: ContentType[]) {
-  await writeFile(TYPES_PATH, JSON.stringify(types, null, 2));
-}
-
 export async function getContentTypes() {
-  return readTypes();
+  const types = await prisma.contentType.findMany();
+  return types.map((t) => ({ name: t.name, fields: t.fields as ContentField[] }));
 }
 
 export async function addContentType(type: ContentType) {
-  const types = await readTypes();
-  const existing = types.find((t) => t.name === type.name);
+  const existing = await prisma.contentType.findUnique({ where: { name: type.name } });
   if (existing) {
     throw new Error('Type already exists');
   }
-  types.push(type);
-  await writeTypes(types);
-  await writeFile(path.join(process.cwd(), 'data', `${type.name}.json`), '[]');
-  return type;
-}
-
-async function getItemsPath(type: string) {
-  return path.join(process.cwd(), 'data', `${type}.json`);
+  return prisma.contentType.create({
+    data: { name: type.name, fields: type.fields as unknown as Prisma.JsonValue },
+  });
 }
 
 export async function getItems(type: string): Promise<Record<string, unknown>[]> {
-  try {
-    const file = await readFile(await getItemsPath(type), 'utf8');
-    return JSON.parse(file) as Record<string, unknown>[];
-  } catch {
-    return [];
-  }
+  const items = await prisma.contentItem.findMany({
+    where: { type: { name: type } },
+    orderBy: { id: 'asc' },
+  });
+  return items.map((i) => ({ id: i.id, ...(i.data as Record<string, unknown>) }));
 }
 
 export async function addItem(
   type: string,
   item: Record<string, unknown>
 ): Promise<Record<string, unknown>> {
-  const items = await getItems(type);
-  const newItem = { id: Date.now().toString(), ...item };
-  items.push(newItem);
-  await writeFile(await getItemsPath(type), JSON.stringify(items, null, 2));
-  return newItem;
+  const t = await prisma.contentType.findUnique({ where: { name: type } });
+  if (!t) throw new Error('Type not found');
+  const created = await prisma.contentItem.create({
+    data: { typeId: t.id, data: item as Prisma.JsonValue },
+  });
+  return { id: created.id, ...item };
 }
