@@ -1,5 +1,5 @@
-import { readFile, writeFile } from 'fs/promises';
-import path from 'path';
+import type { Prisma } from '@prisma/client';
+import prisma from './prisma';
 
 export interface Component {
   name: string;
@@ -7,28 +7,21 @@ export interface Component {
   fields: { name: string; type: string }[];
 }
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const COMPONENT_PATH = path.join(DATA_DIR, 'components.json');
-
-async function readJSON<T>(file: string, defaultValue: T): Promise<T> {
-  try {
-    const data = await readFile(file, 'utf8');
-    return JSON.parse(data) as T;
-  } catch {
-    return defaultValue;
-  }
-}
-
-async function writeJSON(file: string, data: unknown) {
-  await writeFile(file, JSON.stringify(data, null, 2));
-}
-
 export async function getComponents(): Promise<Component[]> {
-  return readJSON<Component[]>(COMPONENT_PATH, []);
+  const components = await prisma.component.findMany();
+  return components.map((c) => ({
+    name: c.name,
+    slug: c.slug,
+    fields: c.fields as { name: string; type: string }[],
+  }));
 }
 
 export async function addComponent(component: Component) {
-  const comps = await getComponents();
-  comps.push(component);
-  await writeJSON(COMPONENT_PATH, comps);
+  await prisma.component.create({
+    data: {
+      name: component.name,
+      slug: component.slug,
+      fields: component.fields as unknown as Prisma.JsonValue,
+    },
+  });
 }

@@ -9,17 +9,29 @@ NextCMS is a simple content management system (CMS) built with **Next.js** and *
    cd cms
    npm install
    ```
-2. Create a `.env` file in `cms` and specify the database connection:
+2. Copy the provided example env file and update it:
    ```bash
+   cp .env.example .env
    # Choose sqlite, mysql, or postgresql
-   DB_TYPE=sqlite
-   DATABASE_URL="file:./dev.db"
+   # DB_TYPE=sqlite
+   # DATABASE_URL="file:./dev.db"
    ```
 3. Generate the Prisma client and initialize the database:
    ```bash
    npx prisma generate
    npx prisma db push
    ```
+
+### Migrating from JSON storage
+
+Earlier versions stored content in flat JSON files. After updating to the Prisma models you should regenerate the client and push the schema:
+
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+Move any existing JSON data into the new database tables as needed.
 
 ## Development
 
@@ -31,7 +43,7 @@ The app runs at `http://localhost:3000`. The admin dashboard is located at `/das
 
 ## Project structure
 
-- `cms/prisma/schema.prisma` – Models for `User`, `Role`, `Permission`, `Resource`, `Category`, and `Media`.
+- `cms/prisma/schema.prisma` – Models for `User`, `Role`, `Permission`, `Resource`, `Category`, `Media`, and dynamic content types.
 - `cms/src/app` – Next.js source code and API routes.
 
 

@@ -43,6 +43,11 @@ export default function CollectionEntriesPage() {
     setFormState(state);
   }
 
+  async function deleteEntryById(id: string) {
+    await fetch(`/api/collections/${params.slug}/${id}`, { method: 'DELETE' });
+    setEntries((prev) => prev.filter((e) => e.id !== id));
+  }
+
   async function saveEntry(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!collectionType) return;
@@ -107,6 +112,13 @@ export default function CollectionEntriesPage() {
               onClick={() => startEdit(entry)}
             >
               Edit
+            </button>
+            <button
+              type="button"
+              className="mt-2 ml-2 text-red-500"
+              onClick={() => deleteEntryById(entry.id)}
+            >
+              Delete
             </button>
           </li>
         ))}
