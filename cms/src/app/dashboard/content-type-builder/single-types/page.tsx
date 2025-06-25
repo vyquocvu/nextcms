@@ -7,6 +7,7 @@ export default function SingleTypesPage() {
       title="Single Types"
       listUrl="/api/singles/types"
       postUrl="/api/singles/types"
+      deleteUrl={(slug) => `/api/singles/types/${slug}`}
       entryLink={(slug) => `/dashboard/singles/${slug}`}
       addButtonLabel="Add Single Type"
     />

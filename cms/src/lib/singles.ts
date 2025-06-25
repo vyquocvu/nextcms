@@ -27,6 +27,10 @@ export async function addSingleType(type: SingleType) {
   })
 }
 
+export async function removeSingleType(slug: string) {
+  await prisma.singleType.delete({ where: { slug } }).catch(() => undefined)
+}
+
 export async function getSingleEntry<T = unknown>(slug: string): Promise<T> {
   const type = await prisma.singleType.findUnique({ where: { slug }, include: { entry: true } })
   return (type?.entry?.data as T) ?? ({} as T)
