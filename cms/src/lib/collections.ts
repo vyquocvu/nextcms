@@ -77,11 +77,10 @@ export async function updateEntry<T extends Record<string, unknown>>(slug: strin
 }
 
 export async function deleteEntry(slug: string, id: string) {
-  const entries = await getEntries<{ id: string } & Record<string, unknown>>(slug);
-  const index = entries.findIndex((e) => e.id === id);
-  if (index === -1) return false;
-  entries.splice(index, 1);
-  const file = path.join(DATA_DIR, slug, 'entries.json');
-  await writeJSON(file, entries);
+  const entry = await prisma.collectionEntry.findFirst({
+    where: { id: Number(id), type: { slug } },
+  });
+  if (!entry) return false;
+  await prisma.collectionEntry.delete({ where: { id: entry.id } });
   return true;
 }
