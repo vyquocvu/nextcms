@@ -22,6 +22,8 @@ NextCMS is a simple content management system (CMS) built with **Next.js** and *
    npx prisma db push
    ```
 
+   **Note:** Running tests requires the Prisma client. If it hasn't been generated yet, run `npx prisma generate` (this downloads the Prisma engines the first time).
+
 ### Migrating from JSON storage
 
 Earlier versions stored content in flat JSON files. After updating to the Prisma models you should regenerate the client and push the schema:
