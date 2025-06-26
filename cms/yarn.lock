@@ -879,6 +879,13 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@playwright/test@^1.41.2", "@playwright/test@^1.42.1":
+  version "1.42.1"
+  resolved "https://registry.npmjs.org/@playwright/test/-/test-1.42.1.tgz"
+  integrity sha512-Gq9rmS54mjBL/7/MvBaNOBwbfnh7beHvS6oS4srqXFcQHpQCV1+c8JXWE8VLPyRDhgS3H8x8A7hztqI9VnwrAQ==
+  dependencies:
+    playwright "1.42.1"
+
 "@prisma/client@^5.15.0":
   version "5.22.0"
   resolved "https://registry.npmjs.org/@prisma/client/-/client-5.22.0.tgz"
@@ -2739,6 +2746,11 @@ fsevents@^2.3.2, fsevents@2.3.3:
   version "2.3.3"
   resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz"
   integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
+
+fsevents@2.3.2:
+  version "2.3.2"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
+  integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
 
 function-bind@^1.1.2:
   version "1.1.2"
@@ -4611,6 +4623,20 @@ pkg-dir@^4.2.0:
   integrity sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==
   dependencies:
     find-up "^4.0.0"
+
+playwright-core@1.42.1:
+  version "1.42.1"
+  resolved "https://registry.npmjs.org/playwright-core/-/playwright-core-1.42.1.tgz"
+  integrity sha512-mxz6zclokgrke9p1vtdy/COWBH+eOZgYUVVU34C73M+4j4HLlQJHtfcqiqqxpP0o8HhMkflvfbquLX5dg6wlfA==
+
+playwright@^1.42.1, playwright@1.42.1:
+  version "1.42.1"
+  resolved "https://registry.npmjs.org/playwright/-/playwright-1.42.1.tgz"
+  integrity sha512-PgwB03s2DZBcNRoW+1w9E+VkLBxweib6KTXM0M3tkiT4jVxKSi6PmVJ591J+0u10LUrgxB7dLRbiJqO5s2QPMg==
+  dependencies:
+    playwright-core "1.42.1"
+  optionalDependencies:
+    fsevents "2.3.2"
 
 possible-typed-array-names@^1.0.0:
   version "1.1.0"
