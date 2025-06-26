@@ -49,6 +49,33 @@ The app runs at `http://localhost:3000`. The admin dashboard is located at `/das
 - `cms/prisma/schema.prisma` – Models for `User`, `Role`, `Permission`, `Resource`, `Category`, `Media`, and dynamic content types.
 - `cms/src/app` – Next.js source code and API routes.
 
+## Testing
+
+Before running tests, generate the Prisma client:
+
+```bash
+npx prisma generate
+```
+
+Set `DB_TYPE` and `DATABASE_URL` in your environment (see `.env.example`).
+
+Run unit tests:
+
+```bash
+npm run test:unit
+```
+
+Run integration tests:
+
+```bash
+npm run test:integration
+```
+
+Run end-to-end tests:
+
+```bash
+npm run test:e2e
+```
 
 ## License
 
