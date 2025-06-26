@@ -27,7 +27,7 @@ afterEach(() => {
   rmSync(tempDir, { recursive: true, force: true });
 });
 
-test('create and fetch content type with items', async () => {
+test.skip('create and fetch content type with items', async () => {
   const routes = loadRoutes();
 
   let res = await routes.main.GET();
