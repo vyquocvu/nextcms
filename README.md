@@ -4,16 +4,18 @@ NextCMS is a simple content management system (CMS) built with **Next.js** and *
 
 ## Setup
 
-1. Install dependencies in the `cms` directory:
+1. Copy the example environment file and update the values:
+   ```bash
+   cp .env.example .env
+   # Choose sqlite, mysql, or postgresql
+   # DB_TYPE=sqlite
+   # DATABASE_URL="file:./dev.db"
+   ```
+2. Install dependencies in the `cms` directory and create its env file:
    ```bash
    cd cms
    npm install
-   ```
-2. Create a `.env` file in `cms` and specify the database connection:
-   ```bash
-   # Choose sqlite, mysql, or postgresql
-   DB_TYPE=sqlite
-   DATABASE_URL="file:./dev.db"
+   cp .env.example .env
    ```
 3. Generate the Prisma client and initialize the database:
    ```bash
@@ -21,21 +23,59 @@ NextCMS is a simple content management system (CMS) built with **Next.js** and *
    npx prisma db push
    ```
 
+   **Note:** Running tests requires the Prisma client. If it hasn't been generated yet, run `npx prisma generate` (this downloads the Prisma engines the first time).
+
+### Migrating from JSON storage
+
+Earlier versions stored content in flat JSON files. After updating to the Prisma models you should regenerate the client and push the schema:
+
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+Move any existing JSON data into the new database tables as needed.
+
 ## Development
 
 Start the Next.js server:
 ```bash
 npm run dev
 ```
-The app runs at `http://localhost:3000`. The admin dashboard is located at `/admin` with **Posts**, **Profile**, and **Settings** sections.
+The app runs at `http://localhost:3000`. The admin dashboard is located at `/dashboard` with **Collections**, **Profile**, and **Settings** sections.
 
 ## Project structure
 
-- `cms/prisma/schema.prisma` – Models for `User`, `Role`, `Permission`, `Resource`, `Post`, `Category`, and `Media`.
+- `cms/prisma/schema.prisma` – Models for `User`, `Role`, `Permission`, `Resource`, `Category`, `Media`, and dynamic content types.
 - `cms/src/app` – Next.js source code and API routes.
-- `cms/data/posts.json` – Sample post data.
 
-A simple posts API is available at `/api/posts` for creating and fetching posts.
+## Testing
+
+Before running tests, generate the Prisma client:
+
+```bash
+npx prisma generate
+```
+
+Set `DB_TYPE` and `DATABASE_URL` in your environment (see `.env.example`).
+
+Run unit tests:
+
+```bash
+npm run test:unit
+```
+
+Run integration tests:
+
+```bash
+npm run test:integration
+```
+
+Run end-to-end tests:
+
+```bash
+npm run test:e2e
+```
 
 ## License
 

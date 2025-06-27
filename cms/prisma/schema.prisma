@@ -91,3 +91,61 @@ model Media {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+/// Dynamic content types used by the dashboard
+model CollectionType {
+  id      Int      @id @default(autoincrement())
+  name    String
+  slug    String   @unique
+  fields  Json
+  entries CollectionEntry[]
+}
+
+model CollectionEntry {
+  id        Int            @id @default(autoincrement())
+  data      Json
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  type      CollectionType @relation(fields: [typeId], references: [id])
+  typeId    Int
+}
+
+model SingleType {
+  id    Int     @id @default(autoincrement())
+  name  String
+  slug  String  @unique
+  fields Json
+  entry  SingleEntry?
+}
+
+model SingleEntry {
+  id        Int        @id @default(autoincrement())
+  data      Json
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  type      SingleType @relation(fields: [typeId], references: [id])
+  typeId    Int @unique
+}
+
+model Component {
+  id     Int    @id @default(autoincrement())
+  name   String
+  slug   String @unique
+  fields Json
+}
+
+model ContentType {
+  id     Int          @id @default(autoincrement())
+  name   String       @unique
+  fields Json
+  items  ContentItem[]
+}
+
+model ContentItem {
+  id        Int         @id @default(autoincrement())
+  data      Json
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  type      ContentType @relation(fields: [typeId], references: [id])
+  typeId    Int
+}
