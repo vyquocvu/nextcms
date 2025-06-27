@@ -40,7 +40,7 @@ export default function ContentTypesPage() {
       <ul className="space-y-2 mb-6">
         {types.map((t) => (
           <li key={t.name}>
-            <Link className="underline" href={`/dashboard/content-types/${t.name}`}>{t.name}</Link>
+            <Link className="underline" href={`/admin/content-types/${t.name}`}>{t.name}</Link>
           </li>
         ))}
       </ul>
