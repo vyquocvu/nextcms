@@ -79,8 +79,11 @@ export async function updateEntry<T extends Record<string, unknown>>(slug: strin
 export async function deleteEntry(slug: string, id: string) {
   const entry = await prisma.collectionEntry.findFirst({
     where: { id: Number(id), type: { slug } },
+    select: { id: true },
   });
-  if (!entry) return false;
+  if (!entry) {
+    return false;
+  }
   await prisma.collectionEntry.delete({ where: { id: entry.id } });
   return true;
 }
