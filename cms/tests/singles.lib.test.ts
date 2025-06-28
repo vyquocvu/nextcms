@@ -8,7 +8,8 @@ jest.mock('@/lib/prisma', () => ({
       findUnique: jest.fn()
     },
     singleEntry: {
-      upsert: jest.fn()
+      upsert: jest.fn(),
+      delete: jest.fn()
     }
   }
 }));
@@ -32,6 +33,7 @@ const mockPrisma = prisma as unknown as {
   };
   singleEntry: {
     upsert: jest.Mock;
+    delete: jest.Mock;
   };
 };
 
@@ -54,8 +56,17 @@ describe('singles library', () => {
     expect(mockPrisma.singleType.create).toHaveBeenCalled();
   });
 
+  test('removeSingleType deletes entry and type', async () => {
+    mockPrisma.singleType.findUnique.mockResolvedValue({ id: 1 });
+    await removeSingleType('page');
+    expect(mockPrisma.singleEntry.delete).toHaveBeenCalledWith({ where: { typeId: 1 } });
+    expect(mockPrisma.singleType.delete).toHaveBeenCalledWith({ where: { id: 1 } });
+  });
+
   test('removeSingleType ignores errors', async () => {
-    mockPrisma.singleType.delete.mockRejectedValueOnce(new Error('not found'));
+    mockPrisma.singleType.findUnique.mockResolvedValue({ id: 2 });
+    mockPrisma.singleEntry.delete.mockRejectedValueOnce(new Error('oops'));
+    mockPrisma.singleType.delete.mockRejectedValueOnce(new Error('oops'));
     await expect(removeSingleType('missing')).resolves.toBeUndefined();
   });
 
