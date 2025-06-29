@@ -8,7 +8,7 @@ export default function CollectionsPage() {
       listUrl="/api/collections/types"
       postUrl="/api/collections/types"
       deleteUrl={(slug) => `/api/collections/types/${slug}`}
-      entryLink={(slug) => `/amin/collections/${slug}`}
+      entryLink={(slug) => `/admin/collections/${slug}`}
       fieldOptions={[
         { value: 'string', label: 'Text' },
         { value: 'number', label: 'Number' },
