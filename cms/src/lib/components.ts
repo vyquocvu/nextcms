@@ -1,4 +1,3 @@
-import type { Prisma } from '@prisma/client';
 import prisma from './prisma';
 
 export interface Component {
@@ -21,7 +20,7 @@ export async function addComponent(component: Component) {
     data: {
       name: component.name,
       slug: component.slug,
-      fields: component.fields as unknown as Prisma.JsonValue,
+      fields: JSON.parse(JSON.stringify(component.fields)),
     },
   });
 }

@@ -1,4 +1,3 @@
-import type { Prisma } from '@prisma/client';
 import prisma from './prisma';
 
 export interface ContentField {
@@ -12,7 +11,7 @@ export interface ContentType {
 
 export async function getContentTypes() {
   const types = await prisma.contentType.findMany();
-  return types.map((t) => ({ name: t.name, fields: t.fields as ContentField[] }));
+  return types.map((t) => ({ name: t.name, fields: t.fields as unknown as ContentField[] }));
 }
 
 export async function addContentType(type: ContentType) {
@@ -21,7 +20,8 @@ export async function addContentType(type: ContentType) {
     throw new Error('Type already exists');
   }
   return prisma.contentType.create({
-    data: { name: type.name, fields: type.fields as unknown as Prisma.JsonValue },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data: { name: type.name, fields: type.fields as any },
   });
 }
 
@@ -40,7 +40,8 @@ export async function addItem(
   const t = await prisma.contentType.findUnique({ where: { name: type } });
   if (!t) throw new Error('Type not found');
   const created = await prisma.contentItem.create({
-    data: { typeId: t.id, data: item as Prisma.JsonValue },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data: { typeId: t.id, data: item as any },
   });
   return { id: created.id, ...item };
 }

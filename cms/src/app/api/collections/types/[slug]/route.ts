@@ -4,8 +4,9 @@ import type { NextRequest } from 'next/server';
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: Promise<{ slug: string }> }
 ) {
+  const params = await context.params;
   const type = await getCollectionType(params.slug);
   if (!type) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
@@ -15,8 +16,9 @@ export async function GET(
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: Promise<{ slug: string }> }
 ) {
+  const params = await context.params;
   await removeCollectionType(params.slug);
   return NextResponse.json({ ok: true });
 }

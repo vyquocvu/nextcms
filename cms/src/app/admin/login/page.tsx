@@ -17,7 +17,7 @@ export default function LoginPage() {
       if (typeof window !== "undefined") {
         localStorage.setItem("isLoggedIn", "true");
       }
-      router.push("/dashboard");
+      router.push("/admin");
     } else {
       setError("Invalid credentials");
     }
