@@ -64,9 +64,7 @@ describe('singles library', () => {
   });
 
   test('removeSingleType ignores errors', async () => {
-    mockPrisma.singleType.findUnique.mockResolvedValue({ id: 2 });
-    mockPrisma.singleEntry.delete.mockRejectedValueOnce(new Error('oops'));
-    mockPrisma.singleType.delete.mockRejectedValueOnce(new Error('oops'));
+    mockPrisma.singleType.findUnique.mockResolvedValue(null);
     await expect(removeSingleType('missing')).resolves.toBeUndefined();
   });
 

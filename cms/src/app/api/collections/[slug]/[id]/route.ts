@@ -4,8 +4,9 @@ import type { NextRequest } from 'next/server';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { slug: string; id: string } }
+  context: { params: Promise<{ slug: string; id: string }> }
 ) {
+  const params = await context.params;
   const body = await request.json();
   const entry = await updateEntry(params.slug, params.id, body);
   if (!entry) {
@@ -16,8 +17,9 @@ export async function PUT(
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { slug: string; id: string } }
+  context: { params: Promise<{ slug: string; id: string }> }
 ) {
+  const params = await context.params;
   const deleted = await deleteEntry(params.slug, params.id);
   if (!deleted) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });

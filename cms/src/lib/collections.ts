@@ -1,4 +1,3 @@
-import type { Prisma } from '@prisma/client';
 import prisma from './prisma';
 
 export interface Field {
@@ -18,7 +17,7 @@ export async function getCollectionTypes(): Promise<CollectionType[]> {
   return types.map((t) => ({
     name: t.name,
     slug: t.slug,
-    fields: t.fields as Field[],
+    fields: Array.isArray(t.fields) ? (t.fields as unknown as Field[]) : [],
   }));
 }
 
@@ -34,7 +33,7 @@ export async function addCollectionType(type: CollectionType) {
     data: {
       name: type.name,
       slug: type.slug,
-      fields: type.fields as unknown as Prisma.JsonValue,
+      fields: JSON.parse(JSON.stringify(type.fields)),
     },
   });
 }
@@ -57,7 +56,7 @@ export async function addEntry<T extends Record<string, unknown>>(slug: string, 
   const created = await prisma.collectionEntry.create({
     data: {
       typeId: type.id,
-      data: entry as Prisma.JsonValue,
+      data: JSON.parse(JSON.stringify(entry)),
     },
   });
   return { id: String(created.id), createdAt: created.createdAt, ...entry } as T & { id: string; createdAt: Date };
@@ -71,7 +70,7 @@ export async function updateEntry<T extends Record<string, unknown>>(slug: strin
   const data = { ...(entry.data as Record<string, unknown>), ...updates };
   const updated = await prisma.collectionEntry.update({
     where: { id: entry.id },
-    data: { data },
+    data: { data: JSON.parse(JSON.stringify(data)) },
   });
   return { id: String(updated.id), createdAt: updated.createdAt, ...data } as T & { id: string; createdAt: Date };
 }

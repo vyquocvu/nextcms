@@ -14,7 +14,7 @@ export default function LoginPage() {
     // Simple mock authentication
     if (username === "admin" && password === "password") {
       // In a real app, set a cookie or token here
-      router.push("/dashboard");
+      router.push("/admin");
     } else {
       setError("Invalid credentials");
     }
