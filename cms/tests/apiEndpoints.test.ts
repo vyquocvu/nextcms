@@ -51,6 +51,10 @@ jest.mock('@/lib/contentTypes', () => ({
 jest.mock('@/lib/singles', () => ({
   getSingleTypes: jest.fn(() => singleTypes),
   addSingleType: jest.fn((t: any) => { singleTypes.push(t); }),
+  removeSingleType: jest.fn((slug: string) => {
+    singleTypes = singleTypes.filter((t) => t.slug !== slug);
+    delete singleEntries[slug];
+  }),
   getSingleEntry: jest.fn((slug: string) => singleEntries[slug] || {}),
   updateSingleEntry: jest.fn((slug: string, data: any) => {
     singleEntries[slug] = { ...(singleEntries[slug] || {}), ...data };
@@ -71,6 +75,7 @@ const contentTypesRoute = require('../src/app/api/content-types/route');
 const contentTypeRoute = require('../src/app/api/content-types/[type]/route');
 const contentItemsRoute = require('../src/app/api/content-types/[type]/items/route');
 const singlesTypesRoute = require('../src/app/api/singles/types/route');
+const singleTypeRoute = require('../src/app/api/singles/types/[slug]/route');
 const singleEntryRoute = require('../src/app/api/singles/[slug]/route');
 const componentsRoute = require('../src/app/api/components/route');
 
@@ -152,6 +157,10 @@ function buildApp() {
   });
   app.post('/api/singles/types', async (req, res) => {
     const r = await singlesTypesRoute.POST(new Request('http://test', { method: 'POST', body: JSON.stringify(req.body) }));
+    toExpressResponse(r, res);
+  });
+  app.delete('/api/singles/types/:slug', async (req, res) => {
+    const r = await singleTypeRoute.DELETE({} as any, { params: { slug: req.params.slug } });
     toExpressResponse(r, res);
   });
   app.get('/api/singles/:slug', async (req, res) => {
@@ -244,5 +253,6 @@ describe('API endpoints', () => {
       .put('/api/singles/home')
       .send({ title: 'Welcome' })
       .expect(200);
+    await request(app).delete('/api/singles/types/home').expect(200);
   });
 });
