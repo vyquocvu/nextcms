@@ -49,6 +49,27 @@ The app runs at `http://localhost:3000`. The admin dashboard is located at `/das
 - `cms/prisma/schema.prisma` – Models for `User`, `Role`, `Permission`, `Resource`, `Category`, `Media`, and dynamic content types.
 - `cms/src/app` – Next.js source code and API routes.
 
+## Authentication
+
+The CMS uses **NextAuth** with a Prisma adapter for user sessions. To configure i
+t:
+
+1. Install dependencies in the `cms` directory:
+   ```bash
+   npm install next-auth @next-auth/prisma-adapter
+   ```
+2. Set environment variables in `cms/.env`:
+   ```bash
+   NEXTAUTH_SECRET="your-secret"
+   NEXTAUTH_URL="http://localhost:3000"
+   ```
+3. Generate the Prisma client and push the schema so the NextAuth tables are cre
+ated:
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
 ## Testing
 
 Before running tests, generate the Prisma client:

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 // Removed Google fonts to allow offline builds
 // Using system fonts instead
 import "./globals.css";
+import AuthSessionProvider from "@/components/SessionProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        {children}
+        <AuthSessionProvider>{children}</AuthSessionProvider>
       </body>
     </html>
   );

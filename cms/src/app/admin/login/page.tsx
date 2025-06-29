@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -11,12 +12,12 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple mock authentication
-    if (username === "admin" && password === "password") {
-      // Set auth flag in localStorage
-      if (typeof window !== "undefined") {
-        localStorage.setItem("isLoggedIn", "true");
-      }
+    const res = await signIn("credentials", {
+      redirect: false,
+      username,
+      password,
+    });
+    if (res && !res.error) {
       router.push("/admin");
     } else {
       setError("Invalid credentials");
