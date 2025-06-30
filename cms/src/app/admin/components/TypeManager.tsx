@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export interface TypeItem {
   name: string;
@@ -92,9 +93,9 @@ export default function TypeManager({
               <span className="flex-1">{t.name}</span>
             )}
             {deleteUrl && (
-              <button type="button" className="text-red-500" onClick={() => remove(t.slug)}>
+              <Button type="button" variant="destructive" onClick={() => remove(t.slug)}>
                 Delete
-              </button>
+              </Button>
             )}
           </li>
         ))}
@@ -143,26 +144,24 @@ export default function TypeManager({
               ))}
             </select>
             {fields.length > 1 && (
-              <button
+              <Button
                 type="button"
-                className="px-2 text-red-500"
+                variant="ghost"
                 onClick={() => setFields(fields.filter((_, i) => i !== idx))}
               >
                 &times;
-              </button>
+              </Button>
             )}
           </div>
         ))}
-        <button
+        <Button
           type="button"
-          className="p-2 bg-gray-200 rounded"
+          variant="secondary"
           onClick={() => setFields([...fields, { name: '', type: 'string' }])}
         >
           Add Field
-        </button>
-        <button type="submit" className="p-2 bg-blue-500 text-white rounded">
-          {addButtonLabel}
-        </button>
+        </Button>
+        <Button type="submit">{addButtonLabel}</Button>
       </form>
     </div>
   );
