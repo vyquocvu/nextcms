@@ -14,7 +14,7 @@ export interface CollectionType {
 
 export async function getCollectionTypes(): Promise<CollectionType[]> {
   const types = await prisma.collectionType.findMany();
-  return types.map((t) => ({
+  return types.map((t: { name: string; slug: string; fields: unknown }) => ({
     name: t.name,
     slug: t.slug,
     fields: Array.isArray(t.fields) ? (t.fields as unknown as Field[]) : [],
@@ -25,7 +25,7 @@ export async function getCollectionType(
   slug: string
 ): Promise<CollectionType | null> {
   const types = await getCollectionTypes();
-  return types.find((t) => t.slug === slug) || null;
+  return types.find((t: CollectionType) => t.slug === slug) || null;
 }
 
 export async function addCollectionType(type: CollectionType) {
@@ -47,7 +47,11 @@ export async function getEntries<T = unknown>(slug: string): Promise<T[]> {
     where: { type: { slug } },
     orderBy: { id: 'asc' },
   });
-  return entries.map((e) => ({ id: String(e.id), createdAt: e.createdAt, ...(e.data as T) }));
+  return entries.map((e: { id: number; createdAt: Date; data: unknown }) => ({
+    id: String(e.id),
+    createdAt: e.createdAt,
+    ...(e.data as T),
+  }));
 }
 
 export async function addEntry<T extends Record<string, unknown>>(slug: string, entry: T) {

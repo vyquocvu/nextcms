@@ -11,7 +11,10 @@ export interface ContentType {
 
 export async function getContentTypes() {
   const types = await prisma.contentType.findMany();
-  return types.map((t) => ({ name: t.name, fields: t.fields as unknown as ContentField[] }));
+  return types.map((t: { name: string; fields: unknown }) => ({
+    name: t.name,
+    fields: t.fields as unknown as ContentField[],
+  }));
 }
 
 export async function addContentType(type: ContentType) {
@@ -30,7 +33,10 @@ export async function getItems(type: string): Promise<Record<string, unknown>[]>
     where: { type: { name: type } },
     orderBy: { id: 'asc' },
   });
-  return items.map((i) => ({ id: i.id, ...(i.data as Record<string, unknown>) }));
+  return items.map((i: { id: number; data: unknown }) => ({
+    id: i.id,
+    ...(i.data as Record<string, unknown>),
+  }));
 }
 
 export async function addItem(

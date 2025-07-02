@@ -8,8 +8,8 @@ export async function GET(
 ) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const params = await (context as any).params;
-  const types = await getContentTypes();
-  const type = types.find((t) => t.name === (params?.type as string));
+  const types: Awaited<ReturnType<typeof getContentTypes>> = await getContentTypes();
+  const type = types.find((t: { name: string }) => t.name === (params?.type as string));
   if (!type) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }

@@ -13,7 +13,11 @@ export interface SingleType {
 
 export async function getSingleTypes(): Promise<SingleType[]> {
   const types = await prisma.singleType.findMany()
-  return types.map(t => ({ name: t.name, slug: t.slug, fields: Array.isArray(t.fields) ? (t.fields as unknown as Field[]) : [] }))
+  return types.map((t: { name: string; slug: string; fields: unknown }) => ({
+    name: t.name,
+    slug: t.slug,
+    fields: Array.isArray(t.fields) ? (t.fields as unknown as Field[]) : [],
+  }))
 }
 
 export async function addSingleType(type: SingleType) {
