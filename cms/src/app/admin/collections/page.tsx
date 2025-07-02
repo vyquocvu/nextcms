@@ -16,6 +16,12 @@ export default function CollectionsPage() {
         { value: 'date', label: 'Date' },
         { value: 'email', label: 'Email' },
         { value: 'url', label: 'URL' },
+        { value: 'richtext', label: 'Rich Text' },
+        { value: 'media', label: 'Media' },
+        { value: 'json', label: 'JSON' },
+        { value: 'relation', label: 'Relation' },
+        { value: 'component', label: 'Component' },
+        { value: 'dynamicZone', label: 'Dynamic Zone' },
       ]}
       addButtonLabel="Add Collection"
     />

@@ -1,8 +1,9 @@
 import prisma from './prisma';
+import type { FieldType } from './fieldTypes';
 
 export interface Field {
   name: string;
-  type: string;
+  type: FieldType;
   components?: string[];
 }
 
