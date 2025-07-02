@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import FieldInput from '@/components/FieldInput';
+import useMediaList from '@/hooks/useMediaList';
 
 interface Entry {
   id: string;
@@ -19,6 +21,7 @@ export default function CollectionEntriesPage() {
   const [collectionType, setCollectionType] = useState<CollectionType | null>(null);
   const [formState, setFormState] = useState<Record<string, string>>({});
   const [editing, setEditing] = useState<Entry | null>(null);
+  const media = useMediaList();
 
   useEffect(() => {
     if (!params.slug) return;
@@ -124,53 +127,15 @@ export default function CollectionEntriesPage() {
         ))}
       </ul>
       <form onSubmit={saveEntry} className="flex flex-col space-y-2">
-        {collectionType.fields.map((f) => {
-          if (f.type === 'boolean') {
-            return (
-              <label key={f.name} className="flex items-center space-x-2">
-                <span>{f.name}</span>
-                <input
-                  type="checkbox"
-                  checked={formState[f.name] === 'true'}
-                  onChange={(e) =>
-                    setFormState({
-                      ...formState,
-                      [f.name]: e.target.checked ? 'true' : 'false',
-                    })
-                  }
-                />
-              </label>
-            );
-          }
-          let inputType = 'text';
-          switch (f.type) {
-            case 'number':
-              inputType = 'number';
-              break;
-            case 'date':
-              inputType = 'date';
-              break;
-            case 'email':
-              inputType = 'email';
-              break;
-            case 'url':
-              inputType = 'url';
-              break;
-          }
-          return (
-            <input
-              key={f.name}
-              type={inputType}
-              className="border p-2"
-              placeholder={f.name}
-              value={formState[f.name] || ''}
-              onChange={(e) =>
-                setFormState({ ...formState, [f.name]: e.target.value })
-              }
-              required
-            />
-          );
-        })}
+        {collectionType.fields.map((f) => (
+          <FieldInput
+            key={f.name}
+            field={f}
+            value={formState[f.name]}
+            onChange={(val) => setFormState({ ...formState, [f.name]: val })}
+            media={media}
+          />
+        ))}
         <div className="flex space-x-2">
           {editing && (
             <button

@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import FieldInput from '@/components/FieldInput';
+import useMediaList from '@/hooks/useMediaList';
 
 interface SingleType {
   name: string;
@@ -12,6 +14,7 @@ export default function SingleEntryPage() {
   const params = useParams<{ slug: string }>();
   const [singleType, setSingleType] = useState<SingleType | null>(null);
   const [formState, setFormState] = useState<Record<string, string>>({});
+  const media = useMediaList();
 
   useEffect(() => {
     if (!params.slug) return;
@@ -55,36 +58,15 @@ export default function SingleEntryPage() {
     <div>
       <h1 className="text-xl font-bold mb-4">{singleType.name}</h1>
       <form onSubmit={saveEntry} className="flex flex-col space-y-2">
-        {singleType.fields.map((f) => {
-          if (f.type === 'boolean') {
-            return (
-              <label key={f.name} className="flex items-center space-x-2">
-                <span>{f.name}</span>
-                <input
-                  type="checkbox"
-                  checked={formState[f.name] === 'true'}
-                  onChange={(e) =>
-                    setFormState({
-                      ...formState,
-                      [f.name]: e.target.checked ? 'true' : 'false',
-                    })
-                  }
-                />
-              </label>
-            );
-          }
-          return (
-            <input
-              key={f.name}
-              className="border p-2"
-              type={f.type === 'number' ? 'number' : 'text'}
-              placeholder={f.name}
-              value={formState[f.name] || ''}
-              onChange={(e) => setFormState({ ...formState, [f.name]: e.target.value })}
-              required
-            />
-          );
-        })}
+        {singleType.fields.map((f) => (
+          <FieldInput
+            key={f.name}
+            field={f}
+            value={formState[f.name]}
+            onChange={(val) => setFormState({ ...formState, [f.name]: val })}
+            media={media}
+          />
+        ))}
         <button type="submit" className="p-2 bg-blue-500 text-white rounded">
           Save
         </button>

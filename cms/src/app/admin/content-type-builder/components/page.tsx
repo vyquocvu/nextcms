@@ -91,6 +91,12 @@ export default function ComponentsPage() {
               <option value="string">Text</option>
               <option value="number">Number</option>
               <option value="boolean">Boolean</option>
+              <option value="richtext">Rich Text</option>
+              <option value="media">Media</option>
+              <option value="json">JSON</option>
+              <option value="relation">Relation</option>
+              <option value="component">Component</option>
+              <option value="dynamicZone">Dynamic Zone</option>
             </select>
             {fields.length > 1 && (
               <button

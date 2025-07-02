@@ -31,6 +31,12 @@ const DEFAULT_OPTIONS: Option[] = [
   { value: 'string', label: 'Text' },
   { value: 'number', label: 'Number' },
   { value: 'boolean', label: 'Boolean' },
+  { value: 'richtext', label: 'Rich Text' },
+  { value: 'media', label: 'Media' },
+  { value: 'json', label: 'JSON' },
+  { value: 'relation', label: 'Relation' },
+  { value: 'component', label: 'Component' },
+  { value: 'dynamicZone', label: 'Dynamic Zone' },
 ];
 
 export default function TypeManager({
