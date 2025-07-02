@@ -2,8 +2,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 async function getPrisma() {
-  const { PrismaClient } = await import('@prisma/client');
-  return new PrismaClient();
+  const mod = await import('@/lib/prisma');
+  return mod.default;
 }
 
 function parseId(id: string) {

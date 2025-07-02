@@ -8,7 +8,7 @@ export interface Component {
 
 export async function getComponents(): Promise<Component[]> {
   const components = await prisma.component.findMany();
-  return components.map((c) => ({
+  return components.map((c: { name: string; slug: string; fields: unknown }) => ({
     name: c.name,
     slug: c.slug,
     fields: c.fields as { name: string; type: string }[],
