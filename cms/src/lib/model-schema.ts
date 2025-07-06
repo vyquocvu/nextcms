@@ -5,6 +5,25 @@ const SCHEMA_PATH = path.join(process.cwd(), 'prisma', 'schema.prisma');
 
 const SCALAR_TYPES = ['String', 'Int', 'Boolean', 'DateTime', 'Json'];
 
+export const CMS_MODELS = [
+  'User',
+  'Role',
+  'Resource',
+  'Permission',
+  'RolePermission',
+  'Post',
+  'Category',
+  'PostCategory',
+  'Media',
+  'CollectionType',
+  'CollectionEntry',
+  'SingleType',
+  'SingleEntry',
+  'Component',
+  'ContentType',
+  'ContentItem',
+];
+
 export interface FieldMeta {
   name: string;
   type: string;
@@ -19,7 +38,9 @@ export interface ModelMeta {
 export async function getModelNames(): Promise<string[]> {
   const schema = await readFile(SCHEMA_PATH, 'utf8');
   const matches = [...schema.matchAll(/model\s+(\w+)\s+\{/g)];
-  return matches.map((m: RegExpMatchArray) => m[1]);
+  return matches
+    .map((m: RegExpMatchArray) => m[1])
+    .filter((name) => CMS_MODELS.includes(name));
 }
 
 export async function getModelSchema(model: string): Promise<ModelMeta | null> {
