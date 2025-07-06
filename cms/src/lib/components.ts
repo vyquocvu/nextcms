@@ -1,9 +1,10 @@
 import prisma from './prisma';
+import type { FieldType } from './fieldTypes';
 
 export interface Component {
   name: string;
   slug: string;
-  fields: { name: string; type: string }[];
+  fields: { name: string; type: FieldType }[];
 }
 
 export async function getComponents(): Promise<Component[]> {
