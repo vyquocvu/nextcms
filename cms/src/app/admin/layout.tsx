@@ -20,9 +20,6 @@ export default function DashboardLayout({
             <Link href="/admin/settings">Settings</Link>
           </Button>
           <Button variant="link" asChild>
-            <Link href="/admin/posts">Posts</Link>
-          </Button>
-          <Button variant="link" asChild>
             <Link href="/admin/collections">Collections</Link>
           </Button>
           <Button variant="link" asChild>
